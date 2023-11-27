@@ -1,7 +1,7 @@
 package hap
 
 import (
-	"github.com/brutella/hap/log"
+	"github.com/LUJUNQUAN/hap/log"
 
 	"net/http"
 )

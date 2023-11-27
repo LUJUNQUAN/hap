@@ -2,7 +2,7 @@
 package service
 
 import (
-	"github.com/brutella/hap/characteristic"
+	"github.com/LUJUNQUAN/hap/characteristic"
 )
 
 const TypeStatelessProgrammableSwitch = "89"

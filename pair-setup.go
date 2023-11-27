@@ -1,11 +1,11 @@
 package hap
 
 import (
-	"github.com/brutella/hap/chacha20poly1305"
-	"github.com/brutella/hap/ed25519"
-	"github.com/brutella/hap/hkdf"
-	"github.com/brutella/hap/log"
-	"github.com/brutella/hap/tlv8"
+	"github.com/LUJUNQUAN/hap/chacha20poly1305"
+	"github.com/LUJUNQUAN/hap/ed25519"
+	"github.com/LUJUNQUAN/hap/hkdf"
+	"github.com/LUJUNQUAN/hap/log"
+	"github.com/LUJUNQUAN/hap/tlv8"
 
 	"net/http"
 )

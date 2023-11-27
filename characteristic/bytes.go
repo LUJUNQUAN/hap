@@ -1,7 +1,7 @@
 package characteristic
 
 import (
-	"github.com/brutella/hap/log"
+	"github.com/LUJUNQUAN/hap/log"
 
 	"encoding/base64"
 	"net/http"

@@ -26,8 +26,8 @@ If you want to support `hap`, please purchase Home from the [App Store][home-app
 
 [home+]: https://hochgatterer.me/home+/
 [home-appstore]: http://itunes.apple.com/app/id995994352
-[GoDoc]: https://godoc.org/github.com/brutella/hap
-[GoDoc Widget]: https://godoc.org/github.com/brutella/hap?status.svg
+[GoDoc]: https://godoc.org/github.com/LUJUNQUAN/hap
+[GoDoc Widget]: https://godoc.org/github.com/LUJUNQUAN/hap?status.svg
 [Travis]: https://travis-ci.org/brutella/hap
 [Travis Widget]: https://travis-ci.org/brutella/hap.svg
 
@@ -36,7 +36,7 @@ If you want to support `hap`, please purchase Home from the [App Store][home-app
 This library is a rewrite of [hc](https://github.com/brutella/hc).
 If you want to migrate from `hc`, consider the following changes.
 
-- Instead of `hc.NewIPTransport(...)` you now call [hap.NewServer(...)](https://pkg.go.dev/github.com/brutella/hap#NewServer) to create a server.
+- Instead of `hc.NewIPTransport(...)` you now call [hap.NewServer(...)](https://pkg.go.dev/github.com/LUJUNQUAN/hap#NewServer) to create a server.
 - You can create your own persistent storage by implementing the [Store](store.go) interface.
 - Setting the value of a characteristic can now fail. Fixes [hc#163](https://github.com/brutella/hc/issues/163)
 - You can define custom http handlers. Fixes [hc#212](https://github.com/brutella/hc/issues/212)
@@ -45,7 +45,7 @@ server.ServeMux().HandleFunc("/ping", func(res http.ResponseWriter, req *http.Re
     res.Write([]byte("pong"))
 })
 ```
-- You can define your own public and private key (just in case) by setting the [Key](https://github.com/brutella/hap/blob/master/server.go#L42) field of the server. Otherwise those keys are generate and stored on disk for you.
+- You can define your own public and private key (just in case) by setting the [Key](https://github.com/LUJUNQUAN/hap/blob/master/server.go#L42) field of the server. Otherwise those keys are generate and stored on disk for you.
 ```go
 server.Key = hap.KeyPair{
 	Public:  []byte{...},
@@ -61,7 +61,7 @@ server.Key = hap.KeyPair{
 - Supports all HomeKit [services](service) and [characteristics](characteristic)
 - Built-in service announcement via DNS-SD using [dnssd](http://github.com/brutella/dnssd)
 - Runs on linux and macOS
-- Documentation: http://godoc.org/github.com/brutella/hap
+- Documentation: http://godoc.org/github.com/LUJUNQUAN/hap
 
 ## Usage
 
@@ -72,8 +72,8 @@ It can be paired with HomeKit using the Apple Home app – use the pin code *001
 package main
 
 import (
-	"github.com/brutella/hap"
-	"github.com/brutella/hap/accessory"
+	"github.com/LUJUNQUAN/hap"
+	"github.com/LUJUNQUAN/hap/accessory"
 
 	"context"
 	"log"
@@ -133,7 +133,7 @@ a.Switch.On.OnValueRemoteUpdate(func(on bool) {
 })
 ```
 
-If you want to change the state of a switch programmatically, you call [SetValue(...)](https://pkg.go.dev/github.com/brutella/hap/characteristic#Bool.SetValue).
+If you want to change the state of a switch programmatically, you call [SetValue(...)](https://pkg.go.dev/github.com/LUJUNQUAN/hap/characteristic#Bool.SetValue).
 
 ```go
 a.Switch.On.SetValue(true)

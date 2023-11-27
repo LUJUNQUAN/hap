@@ -1,7 +1,7 @@
 package accessory
 
 import (
-	"github.com/brutella/hap/service"
+	"github.com/LUJUNQUAN/hap/service"
 
 	"encoding/json"
 	"net/http"

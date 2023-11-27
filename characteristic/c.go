@@ -1,7 +1,7 @@
 package characteristic
 
 import (
-	"github.com/brutella/hap/log"
+	"github.com/LUJUNQUAN/hap/log"
 	"github.com/xiam/to"
 
 	"encoding/json"

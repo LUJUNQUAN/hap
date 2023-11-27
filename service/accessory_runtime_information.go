@@ -1,6 +1,6 @@
 package service
 
-import "github.com/brutella/hap/characteristic"
+import "github.com/LUJUNQUAN/hap/characteristic"
 
 const TypeAccessoryRuntimeInformation = "239"
 

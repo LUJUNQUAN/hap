@@ -5,8 +5,8 @@ package main
 import (
 	"strconv"
 
-	"github.com/brutella/hap"
-	"github.com/brutella/hap/accessory"
+	"github.com/LUJUNQUAN/hap"
+	"github.com/LUJUNQUAN/hap/accessory"
 
 	"context"
 	"log"
