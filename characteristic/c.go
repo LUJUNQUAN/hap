@@ -11,9 +11,10 @@ import (
 const (
 	PermissionRead          = "pr" // The characteristic can only be read by paired controllers.
 	PermissionWrite         = "pw" // The characteristic can only be written by paired controllers.
+	PermissionTimedWrite    = "tw" // The characteristic allows only timed write procedure.
 	PermissionEvents        = "ev" // The characteristic supports events.
-	PermissionHidden        = "hd" // The characteristic is hidden from the user
-	PermissionWriteResponse = "wr" // The characteristic supports write response
+	PermissionHidden        = "hd" // The characteristic is hidden from the user.
+	PermissionWriteResponse = "wr" // The characteristic supports write response.
 )
 
 const (
@@ -132,7 +133,7 @@ func (c *C) OnCValueUpdate(fn ValueUpdateFunc) {
 // The server invokes this function when the value is updated by an http request.
 func (c *C) SetValueRequest(val interface{}, req *http.Request) (interface{}, int) {
 	// check write permission
-	if !c.IsWritable() {
+	if req != nil && !c.IsWritable() {
 		log.Info.Printf("writing %v by %s not allowed\n", val, req.RemoteAddr)
 		return val, -70404
 	}
@@ -232,6 +233,30 @@ func (c *C) IsReadable() bool {
 	return false
 }
 
+// RequiresTimedWrite returns true if the value can
+// only be set with a timed write procedure.
+func (c *C) RequiresTimedWrite() bool {
+	for _, p := range c.Permissions {
+		if p == PermissionTimedWrite {
+			return true
+		}
+	}
+
+	return false
+}
+
+// IsWriteResponse returns true if the value can
+// return a response on write
+func (c *C) IsWriteResponse() bool {
+	for _, p := range c.Permissions {
+		if p == PermissionWriteResponse {
+			return true
+		}
+	}
+
+	return false
+}
+
 // IsObservable returns true if clients are allowed
 // to observe the value of the characteristic.
 func (c *C) IsObservable() bool {
@@ -287,6 +312,8 @@ func (c *C) MarshalJSON() ([]byte, error) {
 		// 2022-03-21 (mah) FIXME provide a http request instead of nil
 		if v, s := c.ValueRequest(nil); s == 0 {
 			d.Value = &V{v}
+		} else {
+			d.Value = &V{c.Val} // dummy "zero" value
 		}
 	}
 
@@ -341,6 +368,11 @@ func (c *C) convert(v interface{}) interface{} {
 }
 
 func (c *C) validVal(v interface{}) bool {
+	iv, ok := v.(int)
+	if !ok {
+		return true
+	}
+
 	if len(c.ValidVals) > 0 {
 		for _, val := range c.ValidVals {
 			if val == v {
@@ -351,7 +383,7 @@ func (c *C) validVal(v interface{}) bool {
 		return false
 	}
 
-	if iv, ok := v.(int); ok && len(c.ValidRange) == 2 {
+	if len(c.ValidRange) == 2 {
 		return c.ValidRange[0] <= iv && c.ValidRange[1] >= iv
 	}
 
