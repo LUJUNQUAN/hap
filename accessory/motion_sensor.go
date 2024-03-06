@@ -9,7 +9,7 @@ type MotionSensor struct {
 	MotionSensor *service.MotionSensor
 }
 
-// NewMotionSensor returns a MotionSensor which implements model.MotionSensor.
+// NewMotionSensor returns a motion sensor.
 func NewMotionSensor(info Info) *MotionSensor {
 	a := MotionSensor{}
 	a.A = New(info, TypeSensor)

@@ -2,6 +2,7 @@ package characteristic
 
 import (
 	"github.com/LUJUNQUAN/hap/log"
+	"sync"
 	"github.com/xiam/to"
 
 	"encoding/json"
@@ -113,6 +114,8 @@ type C struct {
 	// when the new value is the same as the old value.
 	// This flag is only used for programmable switch events.
 	updateOnSameValue bool
+
+	m sync.Mutex
 }
 
 // New returns a new characteristic.
@@ -126,7 +129,9 @@ func New() *C {
 // OnCValueUpdate register the given function which is called
 // when the value of the characteristic is updated.
 func (c *C) OnCValueUpdate(fn ValueUpdateFunc) {
+	c.m.Lock()
 	c.valUpdateFuncs = append(c.valUpdateFuncs, fn)
+	c.m.Unlock()
 }
 
 // Sets the value of c to val and returns a status code.
@@ -152,8 +157,13 @@ func (c *C) setValue(v interface{}, req *http.Request) (interface{}, int) {
 		newVal = c.clampInt(newVal.(int))
 	}
 
+	c.m.Lock()
+	// reference old value
+	oldVal := c.Val
+	c.m.Unlock()
+
 	// ignore the same newVal
-	if c.Val == newVal && !c.updateOnSameValue {
+	if oldVal == newVal && !c.updateOnSameValue {
 		// no error
 		return nil, 0
 	}
@@ -173,14 +183,14 @@ func (c *C) setValue(v interface{}, req *http.Request) (interface{}, int) {
 		}
 	}
 
-	// reference old value
-	oldVal := c.Val
-
+	c.m.Lock()
 	// update to new value
 	c.Val = newVal
+	funcs := c.valUpdateFuncs
+	c.m.Unlock()
 
 	// call update funcs
-	for _, fn := range c.valUpdateFuncs {
+	for _, fn := range funcs {
 		fn(c, newVal, oldVal, req)
 	}
 
@@ -201,11 +211,13 @@ func (c *C) ValueRequest(req *http.Request) (interface{}, int) {
 		return c.ValueRequestFunc(req)
 	}
 
-	return c.value(), 0
+	return c.Value(), 0
 }
 
-// value returns the value of C
-func (c *C) value() interface{} {
+// Value returns the value of C
+func (c *C) Value() interface{} {
+	c.m.Lock()
+	defer c.m.Unlock()
 	return c.Val
 }
 
@@ -313,7 +325,7 @@ func (c *C) MarshalJSON() ([]byte, error) {
 		if v, s := c.ValueRequest(nil); s == 0 {
 			d.Value = &V{v}
 		} else {
-			d.Value = &V{c.Val} // dummy "zero" value
+			d.Value = &V{c.Value()} // dummy "zero" value
 		}
 	}
 

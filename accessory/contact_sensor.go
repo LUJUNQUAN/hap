@@ -1,15 +1,13 @@
 package accessory
 
-import (
-	"github.com/LUJUNQUAN/hap/service"
-)
+import "github.com/brutella/hap/service"
 
 type ContactSensor struct {
 	*A
 	ContactSensor *service.ContactSensor
 }
 
-// NewContactSensor returns a ContactSensor which implements model.ContactSensor.
+// NewContactSensor implements a contact sensor.
 func NewContactSensor(info Info) *ContactSensor {
 	a := ContactSensor{}
 	a.A = New(info, TypeSensor)
