@@ -15,35 +15,52 @@ import (
 )
 
 func main() {
-	a := accessory.NewSwitch(accessory.Info{
+
+	a := accessory.NewBridge(accessory.Info{
+		Name: "bridge",
+	})
+
+	a.Id = uint64(1)
+
+	b := accessory.NewSwitch(accessory.Info{
 		Name: "Lamp",
 	})
 
-	s, err := hap.NewServer(hap.NewFsStore("./db"), a.A)
+	b.Id = uint64(2)
+
+	d := accessory.NewSwitch(accessory.Info{
+		Name: "Lamp1",
+	})
+
+	d.Id = uint64(3)
+
+	s, err := hap.NewServer(hap.NewFsStore("./db"), a.A, b.A, d.A)
 	if err != nil {
 		log.Panic(err)
 	}
 
 	// Log to console when client (e.g. iOS app) changes the value of the on characteristic
-	a.Switch.On.OnValueRemoteUpdate(func(on bool) {
-		if on == true {
+	b.Switch.On.OnValueRemoteUpdate(func(on bool) {
+		if on {
 			log.Println("Client changed switch to on")
 		} else {
 			log.Println("Client changed switch to off")
 		}
 	})
 
+	s.Pin = "34679023"
+
 	// Periodically toggle the switch's on characteristic
 	go func() {
 		for {
-			on := !a.Switch.On.Value()
-			if on == true {
+			on := !b.Switch.On.Value()
+			if on {
 				log.Println("Switch is on")
 			} else {
 				log.Println("Switch is off")
 			}
-			a.Switch.On.SetValue(on)
-			time.Sleep(5 * time.Second)
+			b.Switch.On.SetValue(on)
+			time.Sleep(1 * time.Second)
 		}
 	}()
 
